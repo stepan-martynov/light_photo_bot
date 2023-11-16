@@ -12,5 +12,4 @@ class Configuration:
     bot: BotConfig = BotConfig()
 
 
-configuration = Configuration()
-
+config = Configuration()
