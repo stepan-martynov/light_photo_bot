@@ -1,5 +1,8 @@
 from aiogram import Dispatcher
 
+from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.base import BaseStorage
+
 def setup_dispatcher(
     storage: BaseStorage = MemoryStorage()
 ) -> Dispatcher:
