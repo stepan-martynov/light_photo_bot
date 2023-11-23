@@ -10,6 +10,7 @@ packages = [{include = "light_photo_bot"}]
 python = "^3.11"
 aiogram = "^3.1.1"
 python-dotenv = "^1.0.0"
+dadata = "^21.10.1"
 
 
 [build-system]
