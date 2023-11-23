@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from aiogram import Bot
+from aiogram import Bot, Dispatcher
 from aiogram.types import BotCommand
 from src.configuration import config
 from src.bot.dispather import setup_dispatcher

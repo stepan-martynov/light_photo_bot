@@ -11,8 +11,15 @@ class BotConfig:
 
 
 @dataclass
+class DadataConfig:
+    token: str = getenv("DADATA_API")
+    secret_key: str = getenv("DADATA_SECRET")
+
+
+@dataclass
 class Configuration:
     bot = BotConfig()
+    dadata = DadataConfig()
 
 
 config = Configuration()
