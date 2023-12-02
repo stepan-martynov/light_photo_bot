@@ -5,15 +5,17 @@ import pprint
 from dadata import Dadata
 
 dadata = Dadata(config.dadata.token)
-keys = ["full", 
-        "bik", 
-        "inn", 
-        "kpp", 
-        "ogrn", 
-        "unrestricted_value",
-        "phone", 
-        "full_with_opf", 
-        ]
+keys = [
+    "full", 
+    "bik", 
+    "inn", 
+    "kpp", 
+    "ogrn", 
+    "unrestricted_value",
+    "phone", 
+    "name",
+    "post",
+    ]
 
 
 def agency_by_id(inn: str) -> list:
@@ -24,19 +26,26 @@ def agency_by_id(inn: str) -> list:
 
 
 def filter_dict(raw_result: dict, keys: list, res: dict = {}) -> dict:
+    # pprint.pprint(raw_result)
     for key, value in raw_result.items():
         if isinstance(value, dict):
             filter_dict(value, keys, res)
         elif (key in keys):
             res[key] = value
+    try:
+        res['opf_full'] = f"{raw_result['opf']['full']}"
+        res['opf_short'] = f"{raw_result['opf']['short']}"
+        res['manager_post'] = f"{raw_result['management']['post']}".capitalize()
+    except:
+        ...
     return res
 
 
 def serilized_agency(inn: str, keys: list) -> dict:
     raw_result = agency_by_id(inn)[0]
-    # pprint.pprint(raw_result)
+    pprint.pprint(raw_result)
     return filter_dict(raw_result, keys)
 
 
 if __name__ == "__main__":
-    pprint.pprint(serilized_agency("7841386500", keys))
+    pprint.pprint(serilized_agency("7839113181", keys))
