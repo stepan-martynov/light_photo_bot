@@ -6,5 +6,13 @@ from sqlalchemy.engine.url import URL
 
 from src.configuration import config
 
-def async_engin(url: str | URL) -> AsyncEngine:
-    return _create_async_engine(url, echo: bool = config.debug)
+def create_async_engin(url: str | URL) -> AsyncEngine:
+    return _create_async_engine(url=url, echo = config.debug)
+
+
+def create_session(engine: AsyncEngine) -> sessionmaker:
+    return async_sessionmaker(
+        engine or create_async_engin(config.db.connection_str),
+        class_=AsyncSession,
+        expire_on_commit=False
+    )
