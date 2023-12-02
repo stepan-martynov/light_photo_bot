@@ -6,7 +6,7 @@ from aiogram.types import BotCommand
 from src.configuration import config
 from src.bot.dispatcher import setup_dispatcher
 from src.bot.structure.data_structure import TransferData
-from src.db.database import create_session
+from src.db.database import create_session_maker
 
 
 async def start_bot() -> None:
@@ -18,7 +18,7 @@ async def start_bot() -> None:
         bot,
         allowed_updates=dp.resolve_used_update_types(),
         **TransferData(
-            pool=create_session(),
+            pool=create_session_maker(),
         )
     )
 
