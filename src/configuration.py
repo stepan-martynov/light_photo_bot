@@ -45,6 +45,8 @@ class DadataConfig:
 @dataclass
 class Configuration:
 
+    debug = bool(getenv("DEBUG"))
+
     db=DataBaseConfig()
     bot = BotConfig()
     dadata = DadataConfig()
