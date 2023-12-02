@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.engine.url import URL
 
 from src.configuration import config
+from .models import Manager, BankAccaunt
 
 def create_async_engin(url: str | URL) -> AsyncEngine:
     return _create_async_engine(url=url, echo = config.debug)
