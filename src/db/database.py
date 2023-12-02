@@ -12,7 +12,7 @@ def create_async_engin(url: str | URL) -> AsyncEngine:
     return _create_async_engine(url=url, echo = config.debug)
 
 
-def create_session_maker(engine: AsyncEngine) -> sessionmaker:
+def create_session_maker(engine: AsyncEngine | None = None) -> sessionmaker:
     return async_sessionmaker(
         engine or create_async_engin(config.db.connection_str),
         class_=AsyncSession,
