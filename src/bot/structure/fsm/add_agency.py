@@ -1,6 +1,6 @@
-from aiogram.fsm.state import StateGroup, State
+from aiogram.fsm.state import StatesGroup, State
 
-class RegisterAgencyGroup(StateGroup):
+class RegisterAgency(StatesGroup):
     inn = State()
     bik = State()
     paymant_account = State()
