@@ -15,7 +15,7 @@ from .models import Manager, BankAccaunt
 # def create_async_engine(url: str | URL, echo: bool = config.debug) -> AsyncEngine:
     # return _create_async_engine(url=url, echo=echo)
 
-async_engine = create_async_engine(
+async_engine : AsyncEngine = create_async_engine(
      url=config.db.connection_str,
      echo=config.debug
 )
@@ -31,9 +31,11 @@ asyng_session_factory = async_sessionmaker(async_engine, expire_on_commit=False)
 
 
 async def create_tables(async_engine):
+        async_engine.echo = False
         async with async_engine.begin() as conn:
             await conn.run_sync(Base.metadata.drop_all)
             await conn.run_sync(Base.metadata.create_all)
+        async_engine.echo = True
 
 
 # class Database:
