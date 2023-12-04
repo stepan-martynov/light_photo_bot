@@ -6,7 +6,7 @@ from aiogram.types import BotCommand
 from src.configuration import config
 from src.bot.dispatcher import setup_dispatcher
 from src.bot.structure.data_structure import TransferData
-from src.db.database import create_async_engine, create_session_maker, create_tables
+from src.db.database import async_engine, asyng_session_factory, create_tables
 
 
 async def start_bot() -> None:
@@ -14,13 +14,13 @@ async def start_bot() -> None:
     bot: Bot = Bot(token=config.bot.token)
     dp: Dispatcher = setup_dispatcher()
     
-    await create_tables(async_engine=create_async_engine(echo=False))
+    await create_tables(async_engine=async_engine)
 
     await dp.start_polling(
         bot,
         allowed_updates=dp.resolve_used_update_types(),
         **TransferData(
-            pool=create_session_maker(),
+            pool=asyng_session_factory,
         )
     )
 

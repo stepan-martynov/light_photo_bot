@@ -21,6 +21,7 @@ class DataBaseConfig:
 
     @property
     def connection_str(self) -> str:
+        # postgresql+asyncpg://postgres:postgres@localhost:5432/stepanmartynov
         return URL.create(
             drivername=f"{self.database_system}+{self.driver}",
             username=self.user,
@@ -58,4 +59,4 @@ config = Configuration()
 
 if __name__ == "__main__":
     print(config.bot.token)
-    print(config.db.build_connection_str())
+    print(config.db.connection_str)
