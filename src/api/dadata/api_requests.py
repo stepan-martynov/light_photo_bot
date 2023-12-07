@@ -25,7 +25,7 @@ def get_agency(raw_data: dict) -> dict:
     agency['name'] = raw_data['name']['full']
     agency['inn'] = int(raw_data['inn'])
     agency['kpp'] = int(raw_data['kpp'])
-    agency['ogrn'] = raw_data['ogrn']
+    agency['ogrn'] = int(raw_data['ogrn'])
     agency['opf_short'] = raw_data['opf']['short']
     agency['opf_full'] = raw_data['opf']['full']
     agency['address'] = raw_data['address']['unrestricted_value']
@@ -50,8 +50,8 @@ async def main():
     async with asyng_session_factory() as session:
         agency = Agency(**agency)
         manager = Manager(**manager)
-        agency.manager.append(manager)
-        session.add(manager)
+        agency.manager = manager
+        session.add_all((agency, manager))
         await session.commit()
 
 
