@@ -30,7 +30,7 @@ class DataBaseConfig:
             port=self.port,
             database=self.database
         ).render_as_string(hide_password=False)
-        
+
 
 @dataclass
 class BotConfig:
@@ -48,10 +48,9 @@ class Configuration:
 
     debug = bool(getenv("DEBUG"))
 
-    db=DataBaseConfig()
+    db = DataBaseConfig()
     bot = BotConfig()
     dadata = DadataConfig()
-
 
 
 config = Configuration()

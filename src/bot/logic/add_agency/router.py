@@ -7,7 +7,8 @@ from ...structure.fsm.add_agency import RegisterAgency
 
 add_agency_router = Router()
 
-#TODO add fsm
+# TODO add fsm
+
 
 @add_agency_router.callback_query(F.data == "add_agency", StateFilter(None))
 async def add_agency(callback: types.CallbackQuery, state: FSMContext):
@@ -16,8 +17,8 @@ async def add_agency(callback: types.CallbackQuery, state: FSMContext):
 
 
 @add_agency_router.message(
-        RegisterAgency.inn,
-        F.text.regexp(r"\d{10}").as_("inn"),
+    RegisterAgency.inn,
+    F.text.regexp(r"\d{10}").as_("inn"),
 )
 async def add_agency(message: types.Message, state: FSMContext, inn: Match[str]):
     # TODO find agency by inn in dadata
@@ -26,8 +27,8 @@ async def add_agency(message: types.Message, state: FSMContext, inn: Match[str])
 
 
 @add_agency_router.message(
-        RegisterAgency.bik,
-        F.text.regexp(r"\d{9}").as_("bik"),
+    RegisterAgency.bik,
+    F.text.regexp(r"\d{9}").as_("bik"),
 )
 async def add_agency(message: types.Message, state: FSMContext, bik: Match[str]):
     await state.clear()
