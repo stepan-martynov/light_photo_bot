@@ -13,7 +13,7 @@ async def start_bot() -> None:
     """This function will start bot with pooling mode"""
     bot: Bot = Bot(token=config.bot.token)
     dp: Dispatcher = setup_dispatcher()
-    
+
     await create_tables(async_engine=async_engine)
 
     await dp.start_polling(

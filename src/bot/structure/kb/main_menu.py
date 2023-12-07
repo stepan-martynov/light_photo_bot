@@ -4,8 +4,8 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardBut
 START_MENU = ReplyKeyboardMarkup(
     keyboard=[
         [KeyboardButton(text="Добавить агентство")]
-    ], 
-    resize_keyboard=True, 
+    ],
+    resize_keyboard=True,
     one_time_keyboard=True
 )
 
