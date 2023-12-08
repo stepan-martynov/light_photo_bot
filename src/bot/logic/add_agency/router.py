@@ -4,10 +4,10 @@ from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 
 from ...structure.fsm.add_agency import RegisterAgency
+from ....api.dadata.api_requests import dadata_connection
 
 add_agency_router = Router()
 
-#TODO add fsm
 
 @add_agency_router.callback_query(F.data == "add_agency", StateFilter(None))
 async def add_agency(callback: types.CallbackQuery, state: FSMContext):
@@ -20,9 +20,15 @@ async def add_agency(callback: types.CallbackQuery, state: FSMContext):
         F.text.regexp(r"\d{10}").as_("inn"),
 )
 async def add_agency(message: types.Message, state: FSMContext, inn: Match[str]):
-    # TODO find agency by inn in dadata
+    try:
+        agency, manager = dadata_connection.get_company(str(inn.group(0)))
+    except:
+        return await message.answer("Компания не найдена. Возможно неправильно введен ИНН")
     await state.set_state(RegisterAgency.bik)
-    return await message.answer(f"Вы прислали ИНН {str(inn.group(0))}. Пришлите БИК")
+    return await message.answer(f"Вы прислали ИНН {str(inn.group(0))}.\
+        Мы нашли следующую компанию: {agency}.\
+        Имя менеджера: {manager}.\
+        Пришлите БИК")
 
 
 @add_agency_router.message(
@@ -31,4 +37,9 @@ async def add_agency(message: types.Message, state: FSMContext, inn: Match[str])
 )
 async def add_agency(message: types.Message, state: FSMContext, bik: Match[str]):
     await state.clear()
-    return await message.answer(f"Неплохо {str(bik.group(0))}.")
+    try:
+        bank = dadata_connection.get_bank_accaunt(str(bik.group(0)))
+    except:
+        return await message.answer("Банк не найден. Возможно неправильно введен БИК")
+    return await message.answer(f"Неплохо {str(bik.group(0))}.\
+        Ваш банк {bank}.")
