@@ -40,7 +40,7 @@ class DadataExt(Dadata):
         manager['post'] = raw_data['management']['post']
         return manager
 
-    def get_company(self, inn: str) -> (dict, dict):
+    def get_company(self, inn: str) -> list[dict, dict]:
         raw_data = self._get_raw_agency_data(inn)
         return self.get_agency(raw_data), self.get_manager(raw_data)
 
@@ -49,6 +49,7 @@ class DadataExt(Dadata):
         bank_accaunt = {}
         bank_accaunt['name'] = raw_data['name']['payment']
         bank_accaunt['bic'] = int(raw_data['bic'])
+        bank_accaunt['correspondent_account'] = raw_data['correspondent_account']
         bank_accaunt['address'] = raw_data['address']['unrestricted_value']
         return bank_accaunt
 
@@ -69,6 +70,8 @@ async def main():
         session.add_all((agency, manager, bank_accaunt))
         await session.commit()
 
+    # bank = dadata_connection._get_raw_bank_data("044030706")
+    # pprint.pprint(bank)
 
 if __name__ == "__main__":
     asyncio.run(main())

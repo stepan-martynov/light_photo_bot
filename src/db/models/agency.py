@@ -12,7 +12,7 @@ class Agency(Base):
     opf_short: Mapped[str]
     address: Mapped[str]
     paymant_account: Mapped[int | None] = mapped_column(BigInteger)
-    cor_account: Mapped[int | None] = mapped_column(BigInteger)
+
 
     manager: Mapped["Manager"] = relationship(back_populates="agency")
     bank_accaunt: Mapped["BankAccaunt"] = relationship(back_populates="agency")

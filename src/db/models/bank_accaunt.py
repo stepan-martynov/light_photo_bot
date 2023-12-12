@@ -7,6 +7,7 @@ from .base import Base
 class BankAccaunt(Base):
     name: Mapped[str]
     bic: Mapped[int] = mapped_column(BigInteger)
+    correspondent_account: Mapped[str]
     address: Mapped[str]
 
     agency_id: Mapped[int] = mapped_column(ForeignKey("agency.id", ondelete="CASCADE"))
