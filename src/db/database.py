@@ -1,4 +1,4 @@
-from sqlalchemy.ext.asyncio import AsyncSession, AsyncEngine
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 import asyncio
 from sqlalchemy.ext.asyncio import create_async_engine

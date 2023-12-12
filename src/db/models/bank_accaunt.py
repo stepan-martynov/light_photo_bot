@@ -6,7 +6,7 @@ from .base import Base
 
 class BankAccaunt(Base):
     name: Mapped[str]
-    bic: Mapped[int] = mapped_column(BigInteger)
+    bic: Mapped[str]
     correspondent_account: Mapped[str]
     address: Mapped[str]
 

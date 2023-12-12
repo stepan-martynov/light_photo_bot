@@ -1,10 +1,11 @@
 import pprint
 from re import Match
 from aiogram.filters import StateFilter
+from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
 
-from src.db.models.agency import Agency
+from src.db.models import Agency, Manager, BankAccaunt
 
 from src.bot.structure.fsm.add_agency import RegisterAgency
 from src.api.dadata.api_requests import dadata_connection
@@ -54,9 +55,23 @@ async def add_agency_bank(message: types.Message, state: FSMContext, bik: Match[
     RegisterAgency.paymant_account,
     F.text.regexp(r"\d{20}").as_("paymant_account"),
 )
-async def add_bank_account(message: types.Message, state: FSMContext, paymant_account: Match[str]):
-    await state.update_data(paymant_account=paymant_account.group(0))
+async def add_bank_account(
+    message: types.Message,
+    state: FSMContext,
+    session: AsyncSession,
+    paymant_account: Match[str]
+):
+    # await state.update_data(paymant_account=paymant_account.group(0))
+    # all_data = await state.get_data()
+    paymant_account=paymant_account.group(0)
     all_data = await state.get_data()
-    pprint.pprint(all_data)
-    state.clear()
+    all_data["agency"]["paymant_account"] = paymant_account
+    agency = Agency(**all_data['agency'])
+    manager = Manager(**all_data['manager'])
+    bank_account = BankAccaunt(**all_data['bank'])
+    agency.manager = manager
+    agency.bank_accaunt = bank_account
+    session.add_all((agency, manager, bank_account))
+    await session.commit()
+    await state.clear()
     return await message.answer(f"мы сохранили агенство{all_data}")

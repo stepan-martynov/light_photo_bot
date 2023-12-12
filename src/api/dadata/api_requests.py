@@ -48,7 +48,7 @@ class DadataExt(Dadata):
         raw_data = self._get_raw_bank_data(bik)
         bank_accaunt = {}
         bank_accaunt['name'] = raw_data['name']['payment']
-        bank_accaunt['bic'] = int(raw_data['bic'])
+        bank_accaunt['bic'] = raw_data['bic']
         bank_accaunt['correspondent_account'] = raw_data['correspondent_account']
         bank_accaunt['address'] = raw_data['address']['unrestricted_value']
         return bank_accaunt
