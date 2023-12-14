@@ -53,7 +53,7 @@ async def add_agency_bank(message: types.Message, state: FSMContext, bik: Match[
 
 @add_agency_router.message(
     RegisterAgency.paymant_account,
-    F.text.regexp(r"\d{20}").as_("paymant_account"),
+    F.text.regexp(r"\d{20}").as_("paymant_account")
 )
 async def add_bank_account(
     message: types.Message,

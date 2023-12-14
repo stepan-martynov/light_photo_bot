@@ -59,11 +59,10 @@ class Configuration:
 
     debug = bool(getenv("DEBUG"))
 
-    db=DataBaseConfig()
+    db = DataBaseConfig()
     bot = BotConfig()
     dadata = DadataConfig()
     redis = RedisConfig()
-
 
 
 config = Configuration()

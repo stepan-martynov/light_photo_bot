@@ -73,5 +73,6 @@ async def main():
     # bank = dadata_connection._get_raw_bank_data("044030706")
     # pprint.pprint(bank)
 
+
 if __name__ == "__main__":
     asyncio.run(main())
