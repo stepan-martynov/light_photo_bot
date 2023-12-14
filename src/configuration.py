@@ -33,6 +33,17 @@ class DataBaseConfig:
 
 
 @dataclass
+class RedisConfig:
+    db: str = getenv("REDIS_DB", "1")
+    host: str = getenv("REDIS_HOST", "localhost")
+    port: str = getenv("REDIS_PORT", "6379")
+
+    @property
+    def url(self) -> str:
+        return f"redis://{self.host}:{self.port}/{self.db}"
+
+
+@dataclass
 class BotConfig:
     token: str = getenv("BOT_TOKEN")
 
@@ -51,6 +62,7 @@ class Configuration:
     db = DataBaseConfig()
     bot = BotConfig()
     dadata = DadataConfig()
+    redis = RedisConfig()
 
 
 config = Configuration()
