@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import BigInteger, ForeignKey
 
@@ -10,5 +11,5 @@ class BankAccaunt(Base):
     correspondent_account: Mapped[str]
     address: Mapped[str]
 
-    agency_id: Mapped[int] = mapped_column(ForeignKey("agency.id", ondelete="CASCADE"))
-    agency: Mapped["Agency"] = relationship(back_populates="bank_accaunt")
+    agencies: Mapped[List["Agency"]] = relationship(back_populates="bank_accaunt", uselist=True)
+    photographers: Mapped[List["Photographer"]] = relationship(back_populates="bank_accaunt", uselist=True)
