@@ -20,3 +20,4 @@ class Agency(Base):
     contracts: Mapped[List["Contract"]] = relationship(back_populates="agency", uselist=True, lazy=True)
     bank_accaunt_id: Mapped[int] = mapped_column(ForeignKey("bank_accaunt.id", ondelete="CASCADE"))
     bank_accaunt: Mapped["BankAccaunt"] = relationship(back_populates="agencies", uselist=False)
+    brockers: Mapped[List["Brocker"]] = relationship(back_populates="agency", uselist=True)
