@@ -12,6 +12,8 @@ class Photosession(Base):
 
     contract_id: Mapped[int] = mapped_column(ForeignKey("contract.id", ondelete="CASCADE"))
     contract: Mapped["Contract"] = relationship(back_populates="photosessions", uselist=False, lazy="selectin")
+    brocker_id: Mapped[int] = mapped_column(ForeignKey("brocker.id", ondelete="CASCADE"))
+    brocker: Mapped["Brocker"] = relationship(back_populates="photosessions", uselist=False, lazy="selectin")
 
     @hybrid_property
     def order(self) -> str:
