@@ -9,11 +9,16 @@ START_MENU = ReplyKeyboardMarkup(
     one_time_keyboard=True
 )
 
-ADD_AGENCY_MENU = InlineKeyboardMarkup(
+STSRT_MENU = InlineKeyboardMarkup(
     inline_keyboard=[
         [
             InlineKeyboardButton(
                 text="Добавить агентство", callback_data="add_agency"
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                text="Добавить фотосессию", callback_data="add_photosession"
             )
         ]
     ]
