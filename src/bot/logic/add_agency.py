@@ -1,4 +1,3 @@
-import pprint
 from re import Match
 from aiogram.filters import StateFilter
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -61,8 +60,6 @@ async def add_bank_account(
     session: AsyncSession,
     paymant_account: Match[str]
 ):
-    # await state.update_data(paymant_account=paymant_account.group(0))
-    # all_data = await state.get_data()
     paymant_account=paymant_account.group(0)
     all_data = await state.get_data()
     all_data["agency"]["paymant_account"] = paymant_account
