@@ -9,8 +9,8 @@ class Brocker(Base):
     telegram_id: Mapped[str] = mapped_column(nullable=True)
     name: Mapped[str]
     last_name: Mapped[str]
-    patronymic: Mapped
+    patronymic: Mapped[str]
 
-    protosessions: Mapped[List["Photosession"]] = relationship(back_populates="brocker", uselist=True, lazy="selectin")
+    photosessions: Mapped[List["Photosession"]] = relationship(back_populates="brocker", uselist=True, lazy="selectin")
     agency_id: Mapped[int] = mapped_column(ForeignKey("agency.id", ondelete="CASCADE"))
     agency: Mapped["Agency"] = relationship(back_populates="brockers", uselist=False, lazy="selectin")

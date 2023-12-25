@@ -6,8 +6,9 @@ from .contract import Contract
 from .photographer import Photographer
 from .photosession import Photosession
 from .service import Service
+from .brocker import Brocker
 
 
 __all__ = [
-    'Base', 'Agency', 'BankAccaunt', 'Manager', 'Contract', 'Photographer', 'Photosession', 'Service'
+    'Base', 'Agency', 'BankAccaunt', 'Manager', 'Contract', 'Photographer', 'Photosession', 'Service', 'Brocker'
 ]

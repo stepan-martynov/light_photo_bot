@@ -8,7 +8,7 @@ from num2words import num2words
 class Photosession(Base):
     date: Mapped[str]
     url: Mapped[str]
-    address: Mapped[str]
+    location: Mapped[str]
 
     contract_id: Mapped[int] = mapped_column(ForeignKey("contract.id", ondelete="CASCADE"))
     contract: Mapped["Contract"] = relationship(back_populates="photosessions", uselist=False, lazy="selectin")
