@@ -16,11 +16,15 @@ asyncpg = "^0.29.0"
 greenlet = "^3.0.1"
 redis = "^5.0.1"
 num2words = "^0.5.13"
+aiohttp = "^3.9.1"
+requests = "^2.31.0"
+yadisk = {extras = ["async-defaults"], version = "^2.1.0"}
 
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.7.1"
 flake8 = "^6.1.0"
+black = "^23.12.1"
 
 [build-system]
 requires = ["poetry-core"]
