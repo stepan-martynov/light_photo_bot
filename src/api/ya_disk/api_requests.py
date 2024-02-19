@@ -1,8 +1,11 @@
+from dataclasses import dataclass
 from pprint import pprint
 import asyncio
 import sys
+import random
 
 import yadisk
+from yadisk.objects.resources import AsyncPublicResourceObject
 from src.configuration import config
 
 
@@ -11,13 +14,18 @@ client = yadisk.AsyncClient(
     token=config.yadisk.dev_token
 )
 
+@dataclass
+class YD_image:
+    name: str
+    preview: str
 
-async def create_dir_flat_list(url, path):
+
+async def create_dir_flat_list(url: str, path: str) -> AsyncPublicResourceObject:
     async with client:
-        return await client.get_public_meta(url, path=path, limit=500)
+        return await client.get_public_meta(url, path=path, limit=500, preview_size='L')
 
 
-async def create_img_list(url, path='', img_list=[], img_names_list=[]):
+async def create_img_list(url: str, path='', img_list=[], img_names_list=[]) -> list[YD_image]:
 
     flat_dir_list = await client.get_public_meta(url, path=path, limit=500)
 
@@ -25,12 +33,20 @@ async def create_img_list(url, path='', img_list=[], img_names_list=[]):
         if item.type == 'dir':
             await create_img_list(url, ''.join([path, item.path]), img_list, img_names_list)
         elif item.type == 'file' and item.mime_type == "image/jpeg" and (item.name not in img_names_list):
-            img_list.append(item)
+            img = YD_image(item.name, item.preview)
+            img_list.append(img)
             img_names_list.append(item.name)
-    pprint(img_list)
-    pprint(len(img_list))
     return img_list
 
 
+async def get_date_from_imglist(img_list: list[YD_image]) -> str:
+    return random.choice(img_list).name[:8]
+
+async def main():
+    img_list = await create_img_list("https://disk.yandex.ru/d/hrH-ydWS0GdUgw")
+    # pprint(img_list)
+    print(await get_date_from_imglist(img_list))
+
+
 if __name__ == "__main__":
-    asyncio.run(create_img_list("https://disk.yandex.ru/d/hrH-ydWS0GdUgw"))
+    asyncio.run(main())
