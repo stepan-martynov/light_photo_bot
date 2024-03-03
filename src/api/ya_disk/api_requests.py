@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from typing import NamedTuple
 from pprint import pprint
 import asyncio
 import sys
@@ -14,8 +14,7 @@ client = yadisk.AsyncClient(
     token=config.yadisk.dev_token
 )
 
-@dataclass
-class YD_image:
+class YD_image(NamedTuple):
     name: str
     preview: str
 
@@ -43,8 +42,8 @@ async def get_date_from_imglist(img_list: list[YD_image]) -> str:
     return random.choice(img_list).name[:8]
 
 async def main():
-    img_list = await create_img_list("https://disk.yandex.ru/d/hrH-ydWS0GdUgw")
-    # pprint(img_list)
+    img_list = await create_img_list("https://disk.yandex.ru/d/YYRBWB7jnHmmrA")
+    pprint(img_list)
     print(await get_date_from_imglist(img_list))
 
 
