@@ -3,10 +3,11 @@ from aiogram import F, Router, types
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardMarkup
-from src.api.ya_disk.api_requests import create_img_list, get_date_from_imglist
+from src.api.ya_disk.api_requests import create_img_list, get_date_from_imglist, get_dirname
 
 from src.bot.filters.yadisk_url_filter import YadiskUrlFilter
 from src.bot.structure.fsm.add_photosession import RegisterPhotosession
+from src.bot.structure.kb.ext import kb_generator
 
 
 add_photosession_router = Router()
@@ -25,17 +26,18 @@ async def get_url(callback: types.CallbackQuery, state: FSMContext):
 async def set_url(message: types.Message, state: FSMContext, url: str):
     img_list = await create_img_list(url)
     date = await get_date_from_imglist(img_list)
-    await state.update_data(url=url)
-    await state.update_data(img_list=img_list)
-    await state.set_state(RegisterPhotosession.date)
+    location = await get_dirname(url).lstrip('0123456789.- ')
+    await state.update_data(url=url, img_list=img_list, date=date, location=location)
+    await state.set_state(RegisterPhotosession.agency)
 
-    #TODO обработать съемку по url и получить дату
-    #TODO добавить маску даты и клавиатуру с датой
+    #TODO добавить клавиатуру с агенствами
+    #TODO добавить текст с командами для редактирования данных
+
     return await message.answer(
-        f"Ссылка {url} добавлена. Подтвердите дату {date} или исправьте её"
-        # reply_markup=ReplyKeyboardMarkup([date], resize_keyboard=True)
+        f"Ссылка {url} добавлена. Подтвердите дату {date} или исправьте её",
+        reply_markup=await kb_generator([date]),
+        disable_web_page_preview=True,
     )
-
 
 
 @add_photosession_router.message(StateFilter(RegisterPhotosession.url))

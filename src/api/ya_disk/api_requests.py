@@ -26,7 +26,7 @@ async def create_dir_flat_list(url: str, path: str) -> AsyncPublicResourceObject
 
 async def create_img_list(url: str, path='', img_list=[], img_names_list=[]) -> list[YD_image]:
 
-    flat_dir_list = await client.get_public_meta(url, path=path, limit=500)
+    flat_dir_list = await client.get_public_meta(url, path=path, limit=500, preview_size='L')
 
     for item in flat_dir_list.embedded.items:
         if item.type == 'dir':
@@ -41,11 +41,23 @@ async def create_img_list(url: str, path='', img_list=[], img_names_list=[]) -> 
 async def get_date_from_imglist(img_list: list[YD_image]) -> str:
     return random.choice(img_list).name[:8]
 
-async def main():
-    img_list = await create_img_list("https://disk.yandex.ru/d/YYRBWB7jnHmmrA")
-    pprint(img_list)
-    print(await get_date_from_imglist(img_list))
 
+async def get_dirname(url: str) -> str:
+    async with client:
+        dir_info = await client.get_public_meta(url, path='', fields=['name', ])
+
+    return dir_info.name
+
+
+async def main():
+    # url = "https://disk.yandex.ru/d/YYRBWB7jnHmmrA"
+    url = "https://disk.yandex.ru/d/8Bts6G0pcnnoMA"
+    dir_name = await get_dirname(url)
+    print(dir_name)
+
+    # img_list = await create_img_list("https://disk.yandex.ru/d/YYRBWB7jnHmmrA")
+    # pprint(img_list)
+    # print(await get_date_from_imglist(img_list))
 
 if __name__ == "__main__":
     asyncio.run(main())
