@@ -3,11 +3,18 @@ from aiogram.filters import StateFilter
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram import F, Router, types
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
 
 from src.db.models import Agency, Manager, BankAccaunt
 
-from src.bot.structure.fsm.add_agency import RegisterAgency
 from src.api.dadata.api_requests import dadata_connection
+
+
+class RegisterAgency(StatesGroup):
+    inn = State()
+    bik = State()
+    paymant_account = State()
+
 
 add_agency_router = Router()
 
@@ -31,9 +38,7 @@ async def add_agency(message: types.Message, state: FSMContext, inn: Match[str])
         return await message.answer("Компания не найдена. Возможно неправильно введен ИНН")
     await state.set_state(RegisterAgency.bik)
     return await message.answer(f"Вы прислали ИНН {str(inn.group(0))}.\
-        Мы нашли следующую компанию: {agency}.\
-        И менеджера: {manager}.\
-        Пришлите БИК")
+        Мы нашли следующую компанию: {agency}.\nИ менеджера: {manager}.\nПришлите БИК")
 
 
 @add_agency_router.message(
@@ -47,7 +52,7 @@ async def add_agency_bank(message: types.Message, state: FSMContext, bik: Match[
     except:
         return await message.answer("Банк не найден. Возможно неправильно введен БИК")
     await state.set_state(RegisterAgency.paymant_account)
-    return await message.answer(f"Ваш банк {bank}. Введите счет для оплаты (20 цифр)")
+    return await message.answer(f"Ваш банк {bank}. \nВведите счет для оплаты (20 цифр)")
 
 
 @add_agency_router.message(
