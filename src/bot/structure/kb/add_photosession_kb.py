@@ -14,5 +14,15 @@ async def agencies_kb(agencies: list[Agency]) -> InlineKeyboardMarkup:
 async def services_kb(servicies: list[Service]) -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
     for service in servicies:
-        kb.button(text=service.name, callback_data=service.id)
+        kb.button(text=service.name, callback_data=f'{service.id}_{service.default_price}')
+    kb.adjust(1)
+    return kb.as_markup()
+
+
+async def check_kb(userdata: dict) -> InlineKeyboardMarkup:
+    kb = InlineKeyboardBuilder()
+    for key, value in userdata.items():
+        kb.button(text=f"{key}: {value}", callback_data=f'{key}')
+    kb.adjust(2)
+    kb.button(text="Подтвердить", callback_data="confirm")
     return kb.as_markup()
