@@ -3,7 +3,7 @@ from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.fsm.storage.base import BaseStorage
 
-from .middlewares.database_md import DataBaseMiddleware
+from .middlewares.database_md import DataBaseMiddleware, UserRoleMiddleware
 
 from .logic import routers
 
@@ -17,6 +17,7 @@ def setup_dispatcher(
     )
 
     dp.update.middleware(DataBaseMiddleware())
+    dp.update.middleware(UserRoleMiddleware())
 
     for router in routers:
         dp.include_router(router)

@@ -55,6 +55,14 @@ class DadataConfig:
 
 
 @dataclass
+class YaDiskConfig:
+    id: str = getenv("YANDEX_DISK_ID")
+    secret:  str = getenv("YANDEX_DISK_SECRET")
+    redirect_uri: str = getenv("YANDEX_DISK_REDIRECT_URI")
+    dev_token: str = getenv("YANDEX_DISK_DEV_TOKEN")
+
+
+@dataclass
 class Configuration:
 
     debug = bool(getenv("DEBUG"))
@@ -63,6 +71,7 @@ class Configuration:
     bot = BotConfig()
     dadata = DadataConfig()
     redis = RedisConfig()
+    yadisk = YaDiskConfig()
 
 
 config = Configuration()

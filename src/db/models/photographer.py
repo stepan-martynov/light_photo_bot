@@ -1,25 +1,24 @@
 from typing import List
-from sqlalchemy import ForeignKey
+from sqlalchemy import BigInteger, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
-from .base import Base
+from src.db.models.user import User
 
 
-class Photographer(Base):
-    teegram_id: Mapped[str]
-    name: Mapped[str]
-    last_name: Mapped[str]
-    patronymic: Mapped[str]
-    chat_id: Mapped[str]
-    tel: Mapped[str]
-    inn: Mapped[int]
-    payment_account: Mapped[str]
+class Photographer(User):
+    id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
+    inn: Mapped[int] = mapped_column(BigInteger)
+    paymant_account: Mapped[str]
 
     contracts: Mapped[List["Contract"]] = relationship(back_populates="photographer", uselist=True)
     services: Mapped[List["Service"]] = relationship(back_populates="photographer", uselist=True)
     bank_accaunt_id: Mapped[int] = mapped_column(ForeignKey("bank_accaunt.id", ondelete="CASCADE"))
     bank_accaunt: Mapped["BankAccaunt"] = relationship(back_populates="photographers", uselist=False)
+
+    __mapper_args__ = {
+        "polymorphic_identity": "photographer",
+    }
 
     @hybrid_property
     def initials(self) -> str:
