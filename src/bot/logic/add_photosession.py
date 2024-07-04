@@ -1,11 +1,12 @@
 from pprint import pprint
 from re import Match
-from aiogram import F, Router, types
+from aiogram import F, Router, types, flags
 from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.types import ReplyKeyboardRemove
 from aiogram.fsm.state import State, StatesGroup
 from sqlalchemy.ext.asyncio import AsyncSession
+import yadisk
 
 from src.api.ya_disk.api_requests import create_img_list, get_date_from_imglist, get_location
 from src.bot.filters.user_role_filter import UserRoleFilter
@@ -41,12 +42,18 @@ async def get_url(callback: types.CallbackQuery, state: FSMContext):
 
 @add_photosession_router.message(
     RegisterPhotosession.url,
-    YadiskUrlFilter()
+    YadiskUrlFilter(),
+    flags={"yadisk_request": True}
 )
-async def set_url(message: types.Message, state: FSMContext, session: AsyncSession, url: str):
-    img_list = await create_img_list(url)
+async def set_url(
+    message: types.Message,
+    state: FSMContext,
+    session: AsyncSession,
+    url: str,
+    yadisk_client: yadisk.AsyncClient):
+    img_list = await create_img_list(yadisk_client, url)
     date = await get_date_from_imglist(img_list)
-    location = await get_location(url)
+    location = await get_location(yadisk_client, url)
     await state.update_data(url=url, img_list=img_list, date=date, location=location)
     await state.set_state(RegisterPhotosession.agency)
     agencies = await get_agencies(session=session)
