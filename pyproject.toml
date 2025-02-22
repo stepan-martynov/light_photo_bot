@@ -19,6 +19,8 @@ num2words = "^0.5.13"
 aiohttp = "^3.9.1"
 requests = "^2.31.0"
 yadisk = {extras = ["async-defaults"], version = "^2.1.0"}
+docx = "^0.2.4"
+docxtpl = "^0.18.0"
 
 
 [tool.poetry.group.dev.dependencies]

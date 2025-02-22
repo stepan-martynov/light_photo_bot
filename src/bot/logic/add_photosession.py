@@ -14,7 +14,8 @@ from src.bot.filters.yadisk_url_filter import YadiskUrlFilter
 from src.bot.logic.ext import print_state_data
 from src.bot.structure.kb.add_photosession_kb import agencies_kb, check_kb, services_kb
 from src.bot.structure.kb.main_menu import start_menu
-from src.db.requests.add_photosession import get_agencies, get_servicies, save_photosession
+from src.db.requests.add_photosession import get_agencies, get_photosession_with_details, get_servicies, save_photosession
+from src.doc_worker.doc_generator import serialize_photosession_dict
 
 
 class RegisterPhotosession(StatesGroup):
@@ -95,27 +96,38 @@ async def set_service(callback: types.CallbackQuery, state: FSMContext, service_
 
 @add_photosession_router.callback_query(
     StateFilter(RegisterPhotosession.check),
-    F.data.as_("attribute")
+    F.data == "confirm",
 )
-async def check(callback: types.CallbackQuery, state: FSMContext, attribute: str, session: AsyncSession):
-    match attribute:
+async def confirm(callback: types.CallbackQuery, state: FSMContext, session: AsyncSession):
+    photo_data = await state.get_data()
+    img_list = photo_data.pop("img_list")
+    photo_data["photographer_id"] = callback.from_user.id
+    phss = await save_photosession(session, photo_data)
+    # print('====' * 30)
+    # pprint(phss.__dict__)
+    photosession = await get_photosession_with_details(session, phss.id, phss.service_id)
+    phss_dict = await serialize_photosession_dict(photosession)
+
+    await state.clear()
+    #TODO generate document
+    return await callback.message.answer("Фотосессия добавлена!", reply_markup=await start_menu())
+
+
+@add_photosession_router.callback_query(
+    StateFilter(RegisterPhotosession.check),
+    F.data.in_({"date", "location", "price"})
+)
+async def check(callback: types.CallbackQuery, state: FSMContext):
+    match callback.data:
         case "date":
-            await state.set_data(RegisterPhotosession.date)
+            await state.set_state(RegisterPhotosession.date)
             text = "Укажите дату"
         case "location":
-            await state.set_data(RegisterPhotosession.location)
+            await state.set_state(RegisterPhotosession.location)
             text = "Укажите место"
         case "price":
-            await state.set_data(RegisterPhotosession.price)
+            await state.set_state(RegisterPhotosession.price)
             text = "Укажите цену"
-        case "confirm":
-            photo_data = await state.get_data()
-            img_list = photo_data.pop("img_list")
-            photo_data["photographer_id"] = callback.from_user.id
-            phss = await save_photosession(session, photo_data)
-            await state.clear()
-            #TODO generate document
-            return await callback.message.answer("Фотосессия добавлена!", reply_markup=await start_menu())
     return await callback.message.answer(text)
 
 
@@ -156,20 +168,9 @@ async def set_location(message: types.Message, state: FSMContext, location: Matc
 async def set_price(message: types.Message, state: FSMContext, price: Match[str]):
     await state.update_data(price=price.group(0))
     userdata = await state.get_data()
-    userdata = {k: v for k, v in userdata.items() if k in ('date', 'location', 'price')}
+    short_userdata = {k: v for k, v in userdata.items() if k in ('date', 'location', 'price')}
     await state.set_state(RegisterPhotosession.check)
     return await message.answer(
-        f"Проверьте данные.\n {userdata}",
-        reply_markup=await check_kb(userdata)
+        f"Проверьте данные.\n {short_userdata}",
+        reply_markup=await check_kb(short_userdata)
     )
-
-
-@add_photosession_router.callback_query(
-    StateFilter(RegisterPhotosession.check),
-    F.data=="confirm"
-)
-async def confirm(callback: types.CallbackQuery, state: FSMContext):
-    userdata = await state.get_data()
-    #TODO generate document
-    await state.clear()
-    return await callback.message.answer("Фотосессия добавлена!", reply_markup=await start_menu())

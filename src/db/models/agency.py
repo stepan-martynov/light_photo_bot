@@ -24,3 +24,6 @@ class Agency(Base):
 
     def __str__(self):
         return f"<{self.name=} ({self.inn=})>"
+
+    def __repr__(self) -> str:
+        return f'Agency(id={self.id!r}, name={self.name!r}, inn={self.inn!r}), bank_accaunt_id={self.bank_accaunt_id!r})'

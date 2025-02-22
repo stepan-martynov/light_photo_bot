@@ -11,3 +11,6 @@ class Base:
         return re.sub(r'(?<!^)(?=[A-Z])', '_', cls.__name__).lower()
 
     id: Mapped[int] = mapped_column(autoincrement=True, primary_key=True)
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__} {self.id}>"

@@ -1,6 +1,9 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
+
+from src.db.models.brocker import Brocker
+from src.db.models.contract import Contract
 from .base import Base
 from num2words import num2words
 
@@ -15,6 +18,8 @@ class Photosession(Base):
     contract: Mapped["Contract"] = relationship(back_populates="photosessions", uselist=False, lazy="selectin")
     brocker_id: Mapped[int] = mapped_column(ForeignKey("brocker.id", ondelete="CASCADE"), nullable=True)
     brocker: Mapped["Brocker"] = relationship(back_populates="photosessions", uselist=False, lazy="selectin")
+    service_id: Mapped[int] = mapped_column(ForeignKey("service.id", ondelete="CASCADE"))
+    service: Mapped["Service"] = relationship(back_populates="photosessions", uselist=False, lazy="selectin")
 
     @hybrid_property
     def order(self) -> str:
