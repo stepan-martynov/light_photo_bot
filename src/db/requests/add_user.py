@@ -12,7 +12,6 @@ async def add_user(session: AsyncSession, **user_data) -> User:
 
 
 async def add_brocker(session: AsyncSession, **user_data) -> Brocker:
-    pprint(user_data)
     brocker = Brocker(**user_data)
     session.add(brocker)
     await session.commit()
@@ -21,7 +20,6 @@ async def add_brocker(session: AsyncSession, **user_data) -> Brocker:
 
 
 async def save_photographer(session: AsyncSession, **data) -> Photographer:
-    pprint(data)
     bank_account = BankAccaunt(**data['bank'])
     photographer = {k: v for k, v in data.items() if k != 'bank'}
     photographer = Photographer(**photographer)

@@ -45,14 +45,12 @@ class YaDiskRequestMiddleware(BaseMiddleware):
             data: TransferData
     ) -> Any:
         yadisk_request = get_flag(data, "yadisk_request")
-        pprint(data)
         print(yadisk_request)
         if not yadisk_request:
             print('___' * 40)
             return await handler(event, data)
         client = await get_yadisk_client()
-        print('_!_' * 20)
-        print(f'{client=}')
+        print('_!_' * 30)
         async with client:
             data['yadisk_client'] = client
             return await handler(event, data)

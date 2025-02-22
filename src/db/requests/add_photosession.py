@@ -1,6 +1,7 @@
 from pprint import pprint
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 
 from src.db.models.agency import Agency
 from src.db.models.contract import Contract
@@ -26,19 +27,34 @@ async def save_photosession(session: AsyncSession, photo_data) -> Photosession:
     photographer = photo_data.pop('photographer_id')
     res = await session.execute(select(Photographer.id).where(Photographer.telegram_id == photographer))
     photographer = res.scalar_one_or_none()
-    print(photographer)
     res = await session.execute(select(Contract.id).where(Contract.photographer_id == photographer, Contract.agency_id == agency_id))
     contract_id = res.scalars().first()
-    service_id = photo_data.pop('service_id')
-    pprint(photo_data)
-    pprint(contract_id)
     photosession = Photosession(
         date=photo_data['date'],
         url=photo_data['url'],
         location=photo_data['location'],
         price=int(photo_data['price']),
         contract_id=int(contract_id),
+        service_id=int(photo_data['service_id'])
     )
     session.add(photosession)
     await session.commit()
     await session.refresh(photosession)
+    return photosession
+
+
+async def get_photosession_with_details(session: AsyncSession, photosession_id: int, service_id: int) -> Photosession:
+    query = select(Photosession).where(Photosession.id == photosession_id).options(
+        joinedload(Photosession.contract),
+        joinedload(Photosession.contract).joinedload(Contract.photographer),
+        joinedload(Photosession.contract).joinedload(Contract.photographer).joinedload(Photographer.services),
+        joinedload(Photosession.contract).joinedload(Contract.photographer).joinedload(Photographer.bank_accaunt),
+        joinedload(Photosession.contract).joinedload(Contract.agency),
+        joinedload(Photosession.contract).joinedload(Contract.agency).joinedload(Agency.bank_accaunt),
+        joinedload(Photosession.contract).joinedload(Contract.agency).joinedload(Agency.manager),
+        joinedload(Photosession.brocker)).filter(Photosession.service_id == service_id)
+    result = await session.execute(query)
+    result = result.scalars().first()
+    print('====' * 30)
+    pprint(result)
+    return result

@@ -1,10 +1,11 @@
+from sqlalchemy import BigInteger
 from .base import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.ext.hybrid import hybrid_property
 
 
 class User(Base):
-    telegram_id: Mapped[int] = mapped_column(unique=True, nullable=False)
+    telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     tel: Mapped[str] = mapped_column(unique=True)
     name: Mapped[str]
     last_name: Mapped[str]

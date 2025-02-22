@@ -9,6 +9,8 @@ from src.configuration import config
 from src.bot.dispatcher import setup_dispatcher
 from src.bot.structure.data_structure import TransferData
 from src.db.database import async_engine, asyng_session_factory, create_tables
+from src.test.db_data import create_test_data
+
 
 
 async def start_bot() -> None:
@@ -18,6 +20,8 @@ async def start_bot() -> None:
     dp: Dispatcher = setup_dispatcher(storage)
 
     await create_tables(async_engine=async_engine)
+    await create_test_data()
+
 
     await dp.start_polling(
         bot,

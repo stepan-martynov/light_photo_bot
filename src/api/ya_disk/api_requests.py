@@ -28,9 +28,9 @@ class YD_image(NamedTuple):
     preview: str
 
 
-async def create_dir_flat_list(url: str, path: str) -> AsyncPublicResourceObject:
-    async with client:
-        return await client.get_public_meta(url, path=path, limit=500, preview_size='L')
+# async def create_dir_flat_list(url: str, path: str) -> AsyncPublicResourceObject:
+#     async with client:
+#         return await client.get_public_meta(url, path=path, limit=500, preview_size='L')
 
 
 async def create_img_list(yadisk_client: yadisk.AsyncClient, url: str, path='', img_list=[], img_names_list=[]) -> list[YD_image]:
