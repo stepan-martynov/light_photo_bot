@@ -9,8 +9,9 @@ from src.db.models.user import User
 class Photographer(User):
     id: Mapped[int] = mapped_column(ForeignKey("user.id"), primary_key=True)
     inn: Mapped[int] = mapped_column(BigInteger)
-    # kpp: Mapped[int] = mapped_column(BigInteger)
-    # address: Mapped[str]
+    kpp: Mapped[int] = mapped_column(BigInteger)
+    ogrnip: Mapped[int] = mapped_column(BigInteger)
+    adress: Mapped[str]
     paymant_account: Mapped[str]
 
     contracts: Mapped[List["Contract"]] = relationship(back_populates="photographer", uselist=True)

@@ -20,7 +20,7 @@ async def start_bot() -> None:
     dp: Dispatcher = setup_dispatcher(storage)
 
     await create_tables(async_engine=async_engine)
-    await create_test_data()
+    # await create_test_data()
 
 
     await dp.start_polling(
