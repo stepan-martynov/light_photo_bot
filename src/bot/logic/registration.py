@@ -75,6 +75,8 @@ async def set_role(callback: types.CallbackQuery, state: FSMContext, session: As
     )
 async def get_inn(message: types.Message, state: FSMContext, inn: Match[str]):
     await state.update_data(inn=int(inn.group(0)))
+    photographer_data = dadata_connection.get_company(str(inn.group(0)))
+    pprint(photographer_data)
     await state.set_state(RegisterUser.bik)
     return await message.answer("Пришлите БИК", reply_markup=types.ReplyKeyboardRemove())
 

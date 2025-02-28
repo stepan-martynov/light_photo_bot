@@ -18,10 +18,10 @@ async def serialize_photosession_dict(photosession: Photosession) -> dict:
     pprint(photosession.contract.photographer.__dict__)
     photosession_dict = {
         'photographer_fullname': photosession.contract.photographer.full_name,
-        # 'photographer_adress': photosession.contract.photographer.adress,
+        'photographer_adress': photosession.contract.photographer.adress,
         # 'photographer_opf_full': photosession.contract.photographer.opf_full,
-        # 'photographer_kpp': photosession.contract.photographer.kpp,
-        # 'photographer_ogrnip': photosession.contract.photographer.ogrnip,
+        'photographer_kpp': photosession.contract.photographer.kpp,
+        'photographer_ogrnip': photosession.contract.photographer.ogrnip,
         'photographer_inn': photosession.contract.photographer.inn,
         'photographer_bank_acc': photosession.contract.photographer.paymant_account,
         'photographer_bik': photosession.contract.photographer.bank_accaunt.bic,
@@ -37,7 +37,7 @@ async def serialize_photosession_dict(photosession: Photosession) -> dict:
         'agency_corr': photosession.contract.agency.bank_accaunt.correspondent_account,
         'agency_bank_acc': photosession.contract.agency.paymant_account,
         'manager_full_name': photosession.contract.agency.manager.initials,
-        # 'manager_short': photosession.contract.manager.short_initials(),
+        # 'manager_short': photosession.contract.agency.manager.short_initials,
         'contract_name': photosession.contract.name,
         'contract_date': photosession.contract.date,
         # 'upper_bill_number': photosession.contract.upper_bill_number,
