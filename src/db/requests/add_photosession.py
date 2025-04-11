@@ -1,4 +1,3 @@
-from pprint import pprint
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import joinedload
@@ -9,34 +8,56 @@ from src.db.models.photographer import Photographer
 from src.db.models.photosession import Photosession
 from src.db.models.service import Service
 
-async def get_agencies(session: AsyncSession) -> list[Agency]:
-    """Возвращает список агенств"""
-    res = await session.execute(select(Agency))
-    return res.scalars().all()
+
+async def get_agencies(session: AsyncSession, telegram_id: int) -> list[Agency]:
+    """Get list of agencies filtered by photographer's telegram_id"""
+    stmt = (
+        select(Agency)
+        .join(Agency.contracts)
+        .join(Contract.photographer)
+        .where(Photographer.telegram_id == telegram_id)
+        .distinct()
+    )
+    result = await session.execute(stmt)
+    return result.scalars().all()
 
 
-async def get_servicies(session: AsyncSession, telegram_id) -> list[Service]:
-    """Возвращает список услуг"""
-    res = await session.execute(select(Service).where(Photographer.telegram_id == telegram_id))
-    return res.scalars().all()
+async def get_services(session: AsyncSession, telegram_id: int) -> list[Service]:
+    """Returns a list of services filtered by the photographer's telegram_id"""
+    stmt = (
+        select(Service)
+        .join(Service.photographer)
+        .where(Photographer.telegram_id == telegram_id)
+    )
+    result = await session.execute(stmt)
+    return result.scalars().all()
 
 
-async def save_photosession(session: AsyncSession, photo_data) -> Photosession:
-    """Сохраняем фотосессию"""
+async def save_photosession(session: AsyncSession, photo_data: dict) -> Photosession:
+    """Save a photosession to the database."""
     agency_id = int(photo_data.pop('agency_id'))
-    photographer = photo_data.pop('photographer_id')
-    res = await session.execute(select(Photographer.id).where(Photographer.telegram_id == photographer))
-    photographer = res.scalar_one_or_none()
-    res = await session.execute(select(Contract.id).where(Contract.photographer_id == photographer, Contract.agency_id == agency_id))
-    contract_id = res.scalars().first()
+    photographer_telegram_id = photo_data.pop('photographer_id')
+
+    photographer_id = await session.scalar(
+        select(Photographer.id).where(Photographer.telegram_id == photographer_telegram_id)
+    )
+
+    contract_id = await session.scalar(
+        select(Contract.id).where(
+            Contract.photographer_id == photographer_id,
+            Contract.agency_id == agency_id
+        )
+    )
+
     photosession = Photosession(
         date=photo_data['date'],
         url=photo_data['url'],
         location=photo_data['location'],
         price=int(photo_data['price']),
-        contract_id=int(contract_id),
+        contract_id=contract_id,
         service_id=int(photo_data['service_id'])
     )
+
     session.add(photosession)
     await session.commit()
     await session.refresh(photosession)
@@ -55,6 +76,4 @@ async def get_photosession_with_details(session: AsyncSession, photosession_id: 
         joinedload(Photosession.brocker)).filter(Photosession.service_id == service_id)
     result = await session.execute(query)
     result = result.scalars().first()
-    print('====' * 30)
-    pprint(result)
     return result

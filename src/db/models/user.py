@@ -1,10 +1,15 @@
+"""Модуль с моделью пользователя для базы данных."""
+
 from sqlalchemy import BigInteger
-from .base import Base
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.ext.hybrid import hybrid_property
+
+from .base import Base
 
 
 class User(Base):
+    """Модель пользователя в базе данных."""
+
     telegram_id: Mapped[int] = mapped_column(BigInteger, unique=True, nullable=False)
     tel: Mapped[str] = mapped_column(unique=True)
     name: Mapped[str]
