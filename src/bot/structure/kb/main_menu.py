@@ -6,8 +6,9 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder, ReplyKeyboardBuilder
 async def start_menu() -> InlineKeyboardMarkup:
     menu = InlineKeyboardBuilder()
     menu.button(text="Добавить агентство", callback_data="add_agency")
-    menu.button(text="Добавить фотосессию", callback_data="add_photosession")
     menu.button(text="Добавить услугу", callback_data="add_service")
+    menu.button(text="Добавить фотосессию", callback_data="add_photosession")
+    menu.adjust(2, 1)
     return menu.as_markup()
 
 

@@ -21,9 +21,12 @@ async def services_kb(servicies: list[Service]) -> InlineKeyboardMarkup:
 
 async def check_kb(userdata: dict) -> InlineKeyboardMarkup:
     kb = InlineKeyboardBuilder()
+    # Add regular buttons
     for key, value in userdata.items():
         if key not in ["img_list", ]:
-            kb.button(text=f"{key}: {value}", callback_data=f'{key}')
-    kb.adjust(1)
-    kb.button(text="Подтвердить", callback_data="confirm")
+            kb.button(text=f"{key}", callback_data=f'{key}')
+    # Adjust layout: 2 buttons per row for regular buttons, then 1 button row for confirm
+    kb.adjust(2)
+    # Add confirm button in its own row
+    kb.row(InlineKeyboardButton(text="Подтвердить", callback_data="confirm"))
     return kb.as_markup()
