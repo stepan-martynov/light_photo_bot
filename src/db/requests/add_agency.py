@@ -5,13 +5,18 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 
 async def save_agency(session: AsyncSession, **data) -> Agency:
-    req = await session.execute(select(Photographer).where(Photographer.telegram_id == data['photographer_id']))
+    """Сохраняет информацию об агентстве, менеджере, банковском счете и контракте."""
+    req = await session.execute(
+        select(Photographer).where(
+            Photographer.telegram_id == data['photographer_id']
+        )
+    )
     photographer = req.scalar()
     data['agency']['paymant_account'] = data['paymant_account']
     agency = Agency(**data['agency'])
     manager = Manager(**data['manager'])
     bank_account = BankAccaunt(**data['bank'])
-    contract = Contract(date=data['contract'], photographer_id=photographer.id)
+    contract = Contract(date=data['date'], name=data['name'], photographer_id=photographer.id)
     agency.manager = manager
     agency.bank_accaunt = bank_account
     agency.contracts.append(contract)
